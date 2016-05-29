@@ -1,6 +1,6 @@
 <md-toolbar>
 	<div class="md-toolbar-tools">
-		<h2>
+		<h2 ui-sref="home">
 			<span>Shipping System</span>
 		</h2>
 		<span flex></span>
@@ -12,9 +12,17 @@
 					class="material-icons">keyboard_arrow_down</md-icon>
 			</md-button>
 			<md-menu-content width="4">
-
 				<md-menu-item>
-					<md-button ng-click="toggleNotifications()">
+					<md-button ui-sref="trackStatus">
+						<md-icon class="material-icons">track_changes</md-icon>
+						Track Status
+					</md-button>
+				</md-menu-item>
+				
+				<md-divider></md-divider>
+				
+				<md-menu-item>
+					<md-button ng-click="logout()">
 						<md-icon class="material-icons">notifications</md-icon>
 						Logout
 					</md-button>

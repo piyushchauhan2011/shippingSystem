@@ -9,5 +9,15 @@ angular.module('app')
 				url: '/',
 				templateUrl: 'views/home/index.html',
 				controller: 'HomeCtrl'
+			})
+			.state('login', {
+				url: '/login',
+				templateUrl: 'views/home/login.html',
+				controller: 'LoginCtrl'
+			})
+			.state('trackStatus', {
+				url: '/track-status',
+				templateUrl: 'views/home/track-status.html',
+				controller: 'TrackStatusCtrl'
 			});
 	});
