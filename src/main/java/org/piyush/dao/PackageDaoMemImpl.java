@@ -21,6 +21,14 @@ public class PackageDaoMemImpl implements PackageDao {
 		p.setDeliveryAddress("Unit 3, 31-32 Crown Street, Homebush 2140");
 		
 		addPackage(p);
+		
+		Package p2 = new Package();
+		p2.setOrderId(2);
+		p2.setStatus("shipped");
+		p2.setTrackingNumber("aasdf234asdfwerwer134gf");
+		p2.setDeliveryAddress("Unit 11, Crown Street, Merrylands, 4010");
+		
+		addPackage(p2);
 	}
 	
 	@Override
