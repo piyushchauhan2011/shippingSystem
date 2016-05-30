@@ -6,6 +6,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,18 +34,23 @@ public class PackageController {
         return pdao.getAllPackages();
     }
     
-//    @RequestMapping(value="/{id}", method=RequestMethod.GET)
-//    public Package read(@PathVariable("id") long id) {
-//    	return pdao.getPackageById(id);
-//    }
-//    
-//    @RequestMapping(method=RequestMethod.POST)
-//    public Package create() {
-//    	Package p = new Package();
-//    	pdao.addPackage(p);
-//    	return p;
-//    }
-//        
+    @RequestMapping(value="/{id}", method=RequestMethod.GET)
+    public Package read(@PathVariable("id") long id) {
+    	return pdao.getPackageById(id);
+    }
+    
+    @RequestMapping(method=RequestMethod.POST)
+    public Package create(@RequestBody Package p) {
+    	p = pdao.insertPackage(p);
+    	return p;
+    }
+    
+    @RequestMapping(value="/{id}", method=RequestMethod.PUT)
+    public Package update(@PathVariable("id") long id, @RequestBody Package p) {
+    	p = pdao.updatePackage(id, p);
+    	return p;
+    }
+        
 //    @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 //    public Package delete(@PathVariable("id") long id) {
 //    	Package p = pdao.getPackageById(id);

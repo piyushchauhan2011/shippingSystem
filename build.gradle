@@ -29,6 +29,10 @@ bootRun {
     addResources = true
 }
 
+springBoot {
+    mainClass = "org.piyush.ShippingSystemApplication"
+}
+
 dependencies {
 	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
 	compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0.1'

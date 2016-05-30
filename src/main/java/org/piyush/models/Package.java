@@ -1,5 +1,7 @@
 package org.piyush.models;
 
+import java.util.Random;
+
 public class Package {
 	private long id;
 	private long orderId;
@@ -48,6 +50,16 @@ public class Package {
 	public void setDeliveryAddress(String deliveryAddress) {
 		this.deliveryAddress = deliveryAddress;
 	}
+	
+	public String getRandomHexString(int numchars){
+        Random r = new Random();
+        StringBuffer sb = new StringBuffer();
+        while(sb.length() < numchars){
+            sb.append(Integer.toHexString(r.nextInt()));
+        }
+
+        return sb.toString().substring(0, numchars);
+    }
 
 	@Override
 	public String toString() {
