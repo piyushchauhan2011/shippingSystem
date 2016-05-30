@@ -51,10 +51,10 @@ public class PackageController {
     	return p;
     }
         
-//    @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-//    public Package delete(@PathVariable("id") long id) {
-//    	Package p = pdao.getPackageById(id);
-//    	pdao.deletePackage(id);
-//    	return p;
-//    }
+    @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+    public Package delete(@PathVariable("id") long id) {
+    	Package p = pdao.getPackageById(id);
+    	pdao.deletePackage(id);
+    	return p;
+    }
 }

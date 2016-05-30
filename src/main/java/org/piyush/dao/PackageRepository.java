@@ -63,6 +63,10 @@ public class PackageRepository  {
 		return packag;
 	}
 	
+	public long deletePackage(long id) {
+		return this.jdbc.update("delete from packages where id = ?", id);
+	}
+	
 	private static final RowMapper<Package> packageMapper = new RowMapper<Package>() {
         public Package mapRow(ResultSet rs, int rowNum) throws SQLException {
             Package p = new Package();
