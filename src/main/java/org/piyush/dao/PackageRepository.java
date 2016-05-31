@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.piyush.models.Package;
+import org.piyush.models.PackageItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 @Repository
@@ -24,11 +29,31 @@ public class PackageRepository  {
 	
 	@Autowired
     protected JdbcTemplate jdbc;
+	
+	@Autowired
+	protected NamedParameterJdbcTemplate jdbcNamed;
 
 	public List<Package> getAllPackages() {
 		List<Package> packages = this.jdbc.query(
 		        "select id, order_id, status, tracking_number, delivery_address from packages",
 		        packageMapper);
+		List<Long> packageIds = packages.stream().map((Package p) -> p.getId()).collect(Collectors.toList());
+
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("packageIds", packageIds);
+
+		List<PackageItem> packageItems = this.jdbcNamed.query("select id, package_id, title, description, quantity, price from package_items"
+				+ " where package_items.package_id in (:packageIds)", parameters, packageItemMapper);
+
+		Map<Long, List<PackageItem>> packageItemsGroupedByPackageId = packageItems.stream().collect(Collectors
+				.groupingBy(pi -> pi.getPackageId(), Collectors.mapping((PackageItem pi) -> pi, Collectors.toList())));
+
+		for (Package packag : packages) {
+			if(packageItemsGroupedByPackageId.get(packag.getId()) != null) {
+				packag.setPackageItems(packageItemsGroupedByPackageId.get(packag.getId()));
+			}
+		}
+
 		return packages;
 	}
 	
@@ -36,6 +61,25 @@ public class PackageRepository  {
 		Package p = this.jdbc.queryForObject(
 				"select id, order_id, status, tracking_number, delivery_address from packages where id=?",
 				packageMapper, id);
+		
+		List<PackageItem> packageItems = this.jdbc.query("select id, package_id, title, description, quantity, price from package_items"
+				+ " where package_items.package_id = ?", packageItemMapper, p.getId());
+
+		p.setPackageItems(packageItems);
+		
+		return p;
+	}
+	
+	public Package getPackageByTrackingNumber(String trackingNumber) {
+		Package p = this.jdbc.queryForObject(
+				"select id, order_id, status, tracking_number, delivery_address from packages where tracking_number=?",
+				packageMapper, trackingNumber);
+		
+		List<PackageItem> packageItems = this.jdbc.query("select id, package_id, title, description, quantity, price from package_items"
+				+ " where package_items.package_id = ?", packageItemMapper, p.getId());
+
+		p.setPackageItems(packageItems);
+		
 		return p;
 	}
 	
@@ -76,6 +120,19 @@ public class PackageRepository  {
             p.setTrackingNumber(rs.getString("tracking_number"));
             p.setDeliveryAddress(rs.getString("delivery_address"));
             return p;
+        }
+    };
+    
+    private static final RowMapper<PackageItem> packageItemMapper = new RowMapper<PackageItem>() {
+        public PackageItem mapRow(ResultSet rs, int rowNum) throws SQLException {
+            PackageItem pi = new PackageItem();
+            pi.setId(rs.getInt("id"));
+            pi.setPackageId(rs.getInt("package_id"));
+            pi.setTitle(rs.getString("title"));
+            pi.setDescription(rs.getString("description"));
+            pi.setPrice(rs.getDouble("price"));
+            pi.setQuantity(rs.getInt("quantity"));
+            return pi;
         }
     };
 }

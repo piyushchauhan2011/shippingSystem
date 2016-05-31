@@ -35,6 +35,7 @@ springBoot {
 
 dependencies {
 	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
+	compile 'com.squareup.okhttp3:okhttp:3.3.1'
 	compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0.1'
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
